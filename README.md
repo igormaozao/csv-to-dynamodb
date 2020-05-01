@@ -6,6 +6,7 @@ Simple webpage to convert exported CSV data to DynamoDB Put script.
 - [CSV to DynamoDB converter](#csv-to-dynamodb-converter)
   - [Index](#index)
   - [Getting Started](#getting-started)
+  - [CSV Format](#csv-format)
   - [Stack Base](#stack-base)
 
 ## Getting Started
@@ -17,6 +18,13 @@ Simple webpage to convert exported CSV data to DynamoDB Put script.
 - Set the table name you want to add the data.
 - Set the CSV content into the field.
 - Press _Convert CSV_ button
+
+## CSV Format
+Make sure your CSV has the *headers* of your Table:
+```
+"Pk (S)", "Sk (S)", "Name (S)", "Amount (N)"
+"Pk-1234", "Sk-item", "Database", "5"
+```
 
 ## Stack Base
 Technology  | Reference
