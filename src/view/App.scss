@@ -1,0 +1,76 @@
+.App {
+  height: 100%;
+  text-align: center;
+  
+  header {
+    background-color: #282c34;
+    min-height: 10vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+
+  .configs {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 2vh;
+
+    input {
+      font-size: 16px;
+    }
+
+    button {
+      margin-left: 1vh;
+      background-color: #282c34;
+      color: white;
+      width: 10em;
+      height: 2em;
+      border-radius: 7px;
+    }
+  }
+
+  .editor-boxes {
+    display: flex;
+    height: 85%;
+    
+    .left-editor {
+      width: 50%;
+      height: auto;
+      padding: 3vh;
+      
+      textarea {
+        height: 100%;
+        width: 100%;
+        resize: none;
+      }
+    }
+
+    .right-editor {
+      width: 50%;
+      height: auto;
+      padding: 3vh;
+    }
+  }
+
+  .aceEditorCustom {
+    width: 100%;
+    height: 100%;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(169, 169, 169);
+  }
+
+  @media screen and (max-width: 425px) {
+    .editor-boxes {
+      display: grid;
+
+      .left-editor, .right-editor {
+        width: 90%;
+      }
+    }
+  }
+}
