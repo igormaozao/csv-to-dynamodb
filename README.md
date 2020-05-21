@@ -19,6 +19,8 @@ Simple webpage to convert exported CSV data to DynamoDB Put script.
 - Set the CSV content into the field.
 - Press _Convert CSV_ button
 
+*Online Demo*: https://igormaozao.github.io/csv-to-dynamodb/
+
 ## CSV Format
 Make sure your CSV has the *headers* of your Table:
 ```
