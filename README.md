@@ -6,6 +6,7 @@ Simple webpage to convert exported CSV data to DynamoDB Put script.
 - [CSV to DynamoDB converter](#csv-to-dynamodb-converter)
   - [Index](#index)
   - [Getting Started](#getting-started)
+  - [How to use the converted JSON file](#how-to-use-the-converted-json-file)
   - [CSV Format](#csv-format)
   - [Stack Base](#stack-base)
 
@@ -17,9 +18,15 @@ Simple webpage to convert exported CSV data to DynamoDB Put script.
 > npm start or yarn start
 - Set the table name you want to add the data.
 - Set the CSV content into the field.
-- Press _Convert CSV_ button
+- Press _Convert CSV_ button.
+- Press _Download JSON_ button to download the file locally.
 
 *Online Demo*: https://igormaozao.github.io/csv-to-dynamodb/
+
+## How to use the converted JSON file
+- Use the aws-cli command to write the data into your dynamoDB:
+> aws dynamodb transact-write-items --transact-items file://your-file-name.json
+
 
 ## CSV Format
 Make sure your CSV has the *headers* of your Table:
