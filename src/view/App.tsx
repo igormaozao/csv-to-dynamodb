@@ -1,82 +1,56 @@
 import React, { useState } from "react";
 import AceEditor from "react-ace";
-import Header from "../model/Header";
-import { Put, DynamoRoot } from "../model/DynamoPut";
 
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-tomorrow";
 import "./App.scss";
+import { convertCsvToDynamoObjects, extractHeaderData } from "../helper/CsvParser";
+import convertAndDownloadFile from "../helper/JsonDownloader";
 
 function App() {
   const [tableName, setTableName] = useState("");
   const [csvText, setCsvText] = useState("");
   const [jsonConverted, setJsonConverted] = useState("");
-  const [headers, setHeaders] = useState<Header[]>([]);
 
   function convertText() {
     const lines = csvText.split("\n");
     if (lines.length === 0 || tableName.trim().length === 0) return;
-
-    extractHeaderData(lines[0]);
-
-    let dynamoObj: DynamoRoot[] = []
-
-    const data = lines.slice(1);
-    data.forEach((d, i) => {
-      // Regex: Split all commas, ignoring the ones inside strings
-      const regex = /,(?=(?:(?:[^"]*"){2})*[^"]*$)/g;
-      const lineData = d.split(regex);
-      let put: Put = { Item: {}, TableName: tableName}
-      lineData.forEach((l, index) => {
-        
-        const value = l.trim() ? JSON.parse(l).trim() : ''
-        if (value.length === 0) return;
-        
-        const header = headers[index]
-        put.Item[header.name] = {[header.type]: value}
-      });
-      
-      if(Object.keys(put.Item).length > 0)
-        dynamoObj[i] = { Put: put }
-    });
     
-    setJsonConverted(JSON.stringify(dynamoObj, null, '\t'))
+    // First line must be Headers data, Ie: "Pk (S)", "Sk (S)", "Name (S)", "Amount (N)"
+    let headersArray = extractHeaderData(lines[0])
+    let convertedText = convertCsvToDynamoObjects(lines, tableName, headersArray)
+
+    setJsonConverted(convertedText)
   }
 
-  function extractHeaderData(headerData: string) {
-    const regex = /([a-zA-Z]*)\s\((\w)\)/g;
+  function downloadJsonFile() {
+    if (jsonConverted.trim().length === 0) return;
 
-    let regexMatch;
-    while ((regexMatch = regex.exec(headerData)) !== null) {
-      // This is necessary to avoid infinite loops with zero-width matches
-      if (regexMatch.index === regex.lastIndex) {
-        regex.lastIndex++;
-      }
-
-      let header: Header = { name: regexMatch[1], type: regexMatch[2]}
-      headers.push(header);
-      setHeaders(headers);
-    }
+    convertAndDownloadFile(tableName, jsonConverted)
   }
 
   return (
     <div className="App">
       <header>Convert CSV to DynamoDB JSON</header>
-      <div className="configs">
-        <input type="text" placeholder="Table Name" 
-          value={tableName} 
-          onChange={(e) => setTableName(e.target.value)}
-        />
-        <button onClick={convertText}>Convert CSV</button>
-      </div>
+      
       <div className="editor-boxes">
         <div className="left-editor">
+          <div className="configs">
+            <input type="text" placeholder="Table Name" 
+              value={tableName} 
+              onChange={(e) => setTableName(e.target.value)}
+            />
+            <button onClick={convertText}>Convert CSV</button>
+          </div>
           <textarea
             value={csvText}
             onChange={(e) => setCsvText(e.target.value)}
           />
         </div>
         <div className="right-editor">
+          <div className="configs">
+            <button onClick={downloadJsonFile}>Download JSON</button>
+          </div>
           <AceEditor
             mode="json"
             theme="tomorrow"
